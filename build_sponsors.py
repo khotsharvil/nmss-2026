@@ -49,6 +49,17 @@ def fit(im, max_h=150, max_w=380):
         im = im.resize((max(1, int(w*s)), max(1, int(h*s))), Image.LANCZOS)
     return im
 
+def whiten_checker(im, thr=188):
+    """Replace baked-in transparency checkerboard (near-neutral light pixels) with white."""
+    rgb = im.convert("RGB")
+    r, g, b = rgb.split()
+    mr = r.point(lambda p: 255 if p > thr else 0)
+    mg = g.point(lambda p: 255 if p > thr else 0)
+    mb = b.point(lambda p: 255 if p > thr else 0)
+    mask = ImageChops.multiply(ImageChops.multiply(mr, mg), mb)
+    white = Image.new("RGB", rgb.size, (255, 255, 255))
+    return Image.composite(white, rgb, mask).convert("RGBA")
+
 def has_alpha(im):
     return im.split()[3].getextrema()[0] < 245
 
@@ -74,6 +85,9 @@ print("Natco");        uris["natco"]   = data_uri(load_img("Hygeia Logo Final jp
 print("Intas");        uris["intas"]   = data_uri(load_img("WhatsApp Image 2026-07-17 at 12.20.31 PM.jpeg"))
 print("Novartis");     uris["novartis"]= data_uri(load_svg("Logo with purpose Warm Black RGB.svg"))
 print("Jain");         uris["jain"]    = data_uri(load_img("WhatsApp Image 2026-07-17 at 12.20.34 PM.jpeg"))
+print("Breas");        uris["breas"]   = data_uri(load_img("WhatsApp Image 2026-07-17 at 6.41.56 PM.jpeg"))
+print("Biome");        uris["biome"]   = data_uri(load_img("WhatsApp Image 2026-07-17 at 6.41.57 PM.jpeg"))
+print("Sun Pharma");   uris["sunpharma"]= data_uri(whiten_checker(load_img("WhatsApp Image 2026-07-17 at 6.42.55 PM.jpeg")))
 print("Roche");        uris["roche"]   = data_uri(load_pdf("Roche_Logo_Blue_CMYK (1).pdf", crop_top=0.16))
 print("Consilience");  uris["consil"]  = data_uri(load_img("logo (1).png"))
 print("Jokaan");       uris["jokaan"]  = data_uri(load_pdf("JOKAAN Final_c.pdf"))
@@ -97,9 +111,9 @@ grid = "\n".join([
     "      " + card(uris["intas"], "Intas"),
     "      " + card(uris["novartis"], "Novartis"),
     "      " + card(uris["jain"], "Jain Foundation"),
-    "      " + placeholder("Breas &amp; Biome"),
+    "      " + card2(uris["breas"], "Breas", uris["biome"], "Biome Healthcare"),
     "      " + card(uris["roche"], "Roche"),
-    "      " + placeholder("Sun Pharma"),
+    "      " + card(uris["sunpharma"], "Sun Pharma"),
     "      " + card2(uris["consil"], "Consilience Consultants", uris["jokaan"], "Jokaan"),
     '    </div>',
     '    <div class="sponsors-below reveal">',
