@@ -115,8 +115,6 @@ grid = "\n".join([
     "      " + card(uris["roche"], "Roche"),
     "      " + card(uris["sunpharma"], "Sun Pharma"),
     "      " + card2(uris["consil"], "Consilience Consultants", uris["jokaan"], "Jokaan"),
-    '    </div>',
-    '    <div class="sponsors-below reveal">',
     "      " + card(uris["impact"], "ImpactGuru"),
     '    </div>',
 ])
